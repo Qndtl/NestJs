@@ -10,6 +10,7 @@ import * as bcrypt from 'bcrypt';
 import * as dotenv from 'dotenv';
 import { Request, Response } from 'express';
 import { UsersService } from '../users/users.service';
+import * as colors from 'colors';
 dotenv.config();
 
 interface JwtPayload {
@@ -73,8 +74,8 @@ export class AuthService {
     const { accessToken, refreshToken } = this.generateToken(jwtPayload);
 
     //Access token & refresh token to cookie
-    res.cookie('access-token', accessToken);
-    res.cookie('refresh-token', refreshToken);
+    res.cookie('access_token', accessToken);
+    res.cookie('refresh_token', refreshToken);
 
     //Set hashed refresh token to db
     await this.usersService.updateHashedRefreshToken(user.id, refreshToken);
@@ -100,6 +101,21 @@ export class AuthService {
     });
 
     return { accessToken, refreshToken };
+  }
+
+  /**
+   * 토큰 검증
+   * 토큰의 만료 시간 확인
+   * @param token
+   */
+  validateToken(token) {
+    const dateNow = new Date();
+    const decodedToken = this.jwtService.decode(token, {
+      complete: true,
+    });
+    if (decodedToken['payload'].exp * 1000 > dateNow.getTime())
+      return this.jwtService.verify(token, { secret: 'jwt-secret' });
+    return null;
   }
 
   async logout(id: number): Promise<void> {

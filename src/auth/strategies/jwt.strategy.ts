@@ -11,12 +11,12 @@ interface UserReturn {
 }
 
 @Injectable()
-export class AccessJwtStrategy extends PassportStrategy(Strategy) {
+export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor() {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (req: Request) => {
-          return req.cookies['access-token'];
+          return req.cookies.access_token;
         },
       ]),
       ignoreExpiration: false,

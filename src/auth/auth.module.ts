@@ -3,12 +3,11 @@ import { AuthService } from './auth.service';
 import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './strategies/local.strategy';
 import { JwtModule } from '@nestjs/jwt';
-import { AccessJwtStrategy } from './strategies/access-jwt.strategy';
+import { JwtStrategy } from './strategies/jwt.strategy';
 import { PrismaModule } from '../_prisma/prisma.module';
 import * as dotenv from 'dotenv';
 import { GithubStrategy } from './strategies/github.strategy';
 import { GoogleStrategy } from './strategies/google.strategy';
-import { RefreshJwtStrategy } from './strategies/refresh-jwt.strategy';
 import { UsersModule } from '../users/users.module';
 import { AuthController } from './auth.controller';
 dotenv.config();
@@ -23,12 +22,11 @@ dotenv.config();
   providers: [
     AuthService,
     LocalStrategy,
-    AccessJwtStrategy,
+    JwtStrategy,
     GithubStrategy,
     GoogleStrategy,
-    RefreshJwtStrategy,
   ],
   controllers: [AuthController],
-  exports: [AuthService],
+  exports: [AuthService, JwtStrategy],
 })
 export class AuthModule {}

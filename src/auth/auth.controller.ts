@@ -2,10 +2,9 @@ import { Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guards/local-auth.guard';
-import { AccessJwtAuthGuard } from './guards/access-jwt-auth.guard';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { GithubAuthGuard } from './guards/github-auth.guard';
 import { GoogleAuthGuard } from './guards/google-auth.guard';
-import { RefreshJwtAuthGuard } from './guards/refresh-jwt-auth.guard';
 
 @Controller()
 export class AuthController {
@@ -33,10 +32,9 @@ export class AuthController {
    * 로그인된 사용자 프로필
    * @param req
    */
-  @UseGuards(AccessJwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Get('auth/profile')
   getProfile(@Req() req: Request) {
-    console.log(req);
     return req.user;
   }
 
@@ -87,32 +85,17 @@ export class AuthController {
   }
 
   /**
-   * Token refresh
-   * @param req
-   * @param res
-   */
-  @UseGuards(RefreshJwtAuthGuard)
-  @Get('refresh')
-  refresh(@Req() req: Request, @Res() res: Response) {
-    const accessToken = req.cookies['access-token'];
-
-    res.cookie('access-token', accessToken);
-
-    return req.user;
-  }
-
-  /**
    * 로그아웃
    * @param req
    * @param res
    */
-  @UseGuards(AccessJwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Post('logout')
   async logout(@Req() req, @Res() res: Response) {
     await this.authService.logout(req.user.id);
 
-    res.clearCookie('access-token');
-    res.clearCookie('refresh-token');
+    res.clearCookie('access_token');
+    res.clearCookie('refresh_token');
 
     res.redirect('http://localhost:3000/api/main');
   }

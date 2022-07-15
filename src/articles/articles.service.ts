@@ -11,13 +11,29 @@ export class ArticlesService {
   }
 
   articles(): Promise<Article[]> {
-    return this.prisma.articles.findMany({ include: { user: true } });
+    return this.prisma.articles.findMany({
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
   }
 
   article(id: number): Promise<Article> {
     return this.prisma.articles.findUnique({
       where: { id },
-      include: { user: true },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
     });
   }
 }
