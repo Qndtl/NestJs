@@ -3,6 +3,7 @@ import {
   Inject,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../_prisma/prisma.service';
@@ -92,7 +93,7 @@ export class AuthService {
     refreshToken: string;
   } {
     const accessToken = this.jwtService.sign(payload, {
-      expiresIn: '60s',
+      expiresIn: '10s',
       secret: process.env.JWT_SECRET,
     });
     const refreshToken = this.jwtService.sign(payload, {
@@ -113,6 +114,7 @@ export class AuthService {
     const decodedToken = this.jwtService.decode(token, {
       complete: true,
     });
+    if (!decodedToken) throw new UnauthorizedException('Invalid access token');
     if (decodedToken['payload'].exp * 1000 > dateNow.getTime())
       return this.jwtService.verify(token, { secret: 'jwt-secret' });
     return null;
