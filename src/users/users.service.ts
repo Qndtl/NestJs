@@ -3,6 +3,7 @@ import {
   forwardRef,
   Inject,
   Injectable,
+  UnauthorizedException,
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { PrismaService } from '../_prisma/prisma.service';
@@ -86,6 +87,8 @@ export class UsersService {
     id: number,
   ): Promise<User> {
     const user = await this.prisma.users.findFirst({ where: { id } });
+
+    if (!user.refresh_token) throw new UnauthorizedException();
 
     const isMatch = await bcrypt.compare(refreshToken, user.refresh_token);
 

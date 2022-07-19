@@ -6,10 +6,17 @@ import { Prisma, articles as Article } from '@prisma/client';
 export class ArticlesService {
   constructor(private prisma: PrismaService) {}
 
+  /**
+   * Article 생성
+   * @param body
+   */
   createArticles(body: Prisma.articlesCreateInput): Promise<Article> {
     return this.prisma.articles.create({ data: body });
   }
 
+  /**
+   * Article 목록 조회
+   */
   articles(): Promise<Article[]> {
     return this.prisma.articles.findMany({
       include: {
@@ -23,6 +30,10 @@ export class ArticlesService {
     });
   }
 
+  /**
+   * Article 조회
+   * @param id
+   */
   article(id: number): Promise<Article> {
     return this.prisma.articles.findUnique({
       where: { id },

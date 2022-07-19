@@ -94,9 +94,9 @@ export class AuthController {
   async logout(@Req() req, @Res() res: Response) {
     await this.authService.logout(req.user.id);
 
-    res.clearCookie('access_token');
-    res.clearCookie('refresh_token');
+    res.cookie('access_token', '', { maxAge: 0 });
+    res.cookie('refresh_token', '', { maxAge: 0 });
 
-    res.redirect('http://localhost:3000/api/main');
+    res.json({ data: 'Success logout' });
   }
 }

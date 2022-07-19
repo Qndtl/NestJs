@@ -32,14 +32,15 @@
 $ npm install
 ```
 
-## Running the app
+## ENV(.env)
+```dotenv
+DATABASE_URL="mysql://[db_username]:[db_password]@localhost:3306/[db_name]?schema=public"
 
-```bash
-# development
-$ npm run dev
+JWT_SECRET=[random_string]
 
-# production mode
-$ npm run start:prod
+OAUTH_GITHUB_CLIENT=[Client ID]
+OAUTH_GITHUB_SECRET=[Client secret]
+OAUTH_GITHUB_CALLBACK=[Authorization callback URL]
 ```
 
 ## Prisma(ORM)
@@ -50,6 +51,16 @@ $ npm run migrate
 
 # studio
 $ npm run studio
+```
+
+## Running the app
+
+```bash
+# development
+$ npm run start:dev
+
+# production mode
+$ npm run start:prod
 ```
 
 ## License

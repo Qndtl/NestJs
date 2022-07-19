@@ -8,10 +8,9 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../_prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
-import * as dotenv from 'dotenv';
 import { Request, Response } from 'express';
 import { UsersService } from '../users/users.service';
-import * as colors from 'colors';
+import * as dotenv from 'dotenv';
 dotenv.config();
 
 interface JwtPayload {
@@ -81,7 +80,7 @@ export class AuthService {
     //Set hashed refresh token to db
     await this.usersService.updateHashedRefreshToken(user.id, refreshToken);
 
-    res.redirect('http://localhost:3000/api/main');
+    res.redirect('http://localhost:4000');
   }
 
   /**
@@ -116,10 +115,14 @@ export class AuthService {
     });
     if (!decodedToken) throw new UnauthorizedException('Invalid access token');
     if (decodedToken['payload'].exp * 1000 > dateNow.getTime())
-      return this.jwtService.verify(token, { secret: 'jwt-secret' });
+      return this.jwtService.verify(token, { secret: process.env.JWT_SECRET });
     return null;
   }
 
+  /**
+   * 로그아웃
+   * @param id
+   */
   async logout(id: number): Promise<void> {
     await this.prisma.users.update({
       where: { id },

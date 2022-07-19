@@ -15,6 +15,11 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 export class ArticlesController {
   constructor(private readonly articlesService: ArticlesService) {}
 
+  /**
+   * Article 생성
+   * @param body
+   * @param req
+   */
   @UseGuards(JwtAuthGuard)
   @Post()
   createArticle(@Body() body, @Req() req) {
@@ -25,6 +30,9 @@ export class ArticlesController {
     });
   }
 
+  /**
+   * Articles 목록 조회
+   */
   @Get()
   async articles(): Promise<{ data: Article[] }> {
     const articles = await this.articlesService.articles();
@@ -33,6 +41,10 @@ export class ArticlesController {
     };
   }
 
+  /**
+   * Article 조회
+   * @param param
+   */
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   async article(@Param() param: Prisma.articlesWhereUniqueInput) {
